@@ -1,2 +1,2 @@
-public class Client extends Person{
+public class Client extends Person {
 }

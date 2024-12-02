@@ -9,7 +9,7 @@ Methods:
 Person(String name, int salary, Gender gender, String birthDate)
 String getName()
 void setName(String name)
-int getSalary()
+  int getSalary()
 void setSalary(int salary)
 Gender getGender()
 void setGender(Gender gender)

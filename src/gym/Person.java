@@ -1,3 +1,5 @@
+package gym;
+
 public class Person {
     private String name;
     private Gender gender;
@@ -42,5 +44,9 @@ public class Person {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+    public boolean isOverAge(int Age)
+    {
+        return DateUtils.isOverAge(getDateOfBirth(),Age);
     }
 }

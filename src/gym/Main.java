@@ -1,7 +1,11 @@
+package gym;
+
 import gym.Exception.*;
-import gym.customers.*;
-import gym.management.*;
-import gym.management.Sessions.*;
+import gym.customers.Client;
+import gym.management.Secretary;
+import gym.management.Sessions.Session;
+import gym.management.Instructor;
+import gym.management.Sessions.SessionType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,7 +126,7 @@ public class Main {
 
         System.out.println("\n" + c1.getName() + " Notifications: " + c1.getNotifications());
 
-        System.out.println("\n---Gym information---");
+        System.out.println("\n---gym.Gym information---");
 
         System.out.print(gym);
     }

@@ -1,14 +1,25 @@
+package gym.management.Sessions;
+
+import gym.ForumType;
+import gym.customers.Client;
+import gym.management.Instructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Session {
     private SessionType sessionType;
     private String date;
     private ForumType forumType;
     private Instructor instructor;
+    private List<Client>registeredToSession;
 
     public Session(SessionType sessionType,String date,ForumType forumType,Instructor instructor){
         this.sessionType=sessionType;
         this.date=date;
         this.forumType=forumType;
         this.instructor=instructor;
+        registeredToSession=new ArrayList<>();
     }
 
     public SessionType getSessionType() {
@@ -41,5 +52,9 @@ public class Session {
 
     public void setInstructor(Instructor instructor){
         this.instructor = instructor;
+    }
+
+    public List<Client> getRegisteredToSession() {
+        return registeredToSession;
     }
 }

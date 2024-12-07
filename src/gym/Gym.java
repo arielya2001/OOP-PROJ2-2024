@@ -11,6 +11,7 @@ import java.util.Set;
 
 public class Gym {
     private static Gym gym=new Gym();
+    private String name;
     private Secretary secretary;
     private List<Client> clients=new ArrayList<>();
     private List<Instructor> instructors=new ArrayList<>();
@@ -24,6 +25,12 @@ public class Gym {
     {
         return gym;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
 
     public Secretary getSecretary() {
         return secretary;
@@ -32,4 +39,11 @@ public class Gym {
     public List<Client> getClients() {
         return clients;
     }
+    public void setSecretary(Person person, int salaryPerMonth) {
+        if (!(person instanceof Secretary)) {
+            Secretary secretary = new Secretary();
+            this.secretary = secretary;
+        }
+    }
+
 }

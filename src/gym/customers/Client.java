@@ -19,6 +19,9 @@ public class Client extends Person {
         super(person.getName(), person.getAccountBalance(), person.getGender(), person.getDateOfBirth());
         notifications=new ArrayList<>();
     }
+    public void addNotification(String notification) {
+        notifications.add(notification);
+    }
 
 
     public String getNotifications() {

@@ -5,15 +5,22 @@ import gym.Exception.DuplicateClientException;
 import gym.Exception.InstructorNotQualifiedException;
 import gym.Exception.InvalidAgeException;
 import gym.ForumType;
+import gym.Gym;
 import gym.Person;
+import gym.Gender;
 import gym.customers.Client;
 import gym.customers.ClientRegistration;
 import gym.management.Sessions.Session;
 import gym.management.Sessions.SessionType;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Secretary {
+public class Secretary extends Person {
+    private int salaryPerMonth;
+    private Gym gym;
+    private List<String> actionsHistory = new ArrayList<>();
+
     private ClientRegistration clientRegistration;
 
 
@@ -22,12 +29,17 @@ public class Secretary {
         this.clientRegistration=new ClientRegistration();
 
     }
+    public Secretary(String name, int accountBalance, Gender gender, String dateOfBirth, int salaryPerMonth) {
+        super(name, accountBalance, gender, dateOfBirth); // Call Person constructor
+        this.salaryPerMonth = salaryPerMonth; // Initialize the salary
+    }
+
 
 
 
     public Client registerClient (Person person) throws InvalidAgeException, DuplicateClientException
     {
-       return clientRegistration.registerNewClient(person);
+        return clientRegistration.registerNewClient(person);
     }
 
     public void unregisterClient(Client client)throws ClientNotRegisteredException
@@ -61,5 +73,10 @@ public class Secretary {
     }
 
     public void paySalaries() {
+    }
+    public void printActions() {
+        for (String action : actionsHistory) {
+            System.out.println(action);
+        }
     }
 }

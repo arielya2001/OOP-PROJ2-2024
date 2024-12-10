@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Gym {
-    private static Gym gym=new Gym();
+public class Gym implements Observer{
+    private static final Gym gym=new Gym();
     private Secretary secretary;
     private List<Client> clients=new ArrayList<>();
     private List<Instructor> instructors=new ArrayList<>();
@@ -29,8 +29,10 @@ public class Gym {
     }
 
     public Secretary getSecretary() {
-        return secretary;
+        return this.secretary;
     }
+
+
 
     public List<Client> getClients() {
         return clients;
@@ -61,10 +63,26 @@ public class Gym {
     {
         operations.add(action);
     }
+    public void disableSecretary() {
+        if (this.secretary != null) {
+            this.secretary.disabled();
+            this.secretary = null;
+        }
+    }
 
     public void setSecretary(Person person, int salary)
     {
-        addOperations("A new secretary has started working at the gym: "+person.getName());
+        disableSecretary();
         this.secretary=new Secretary(person,salary);
+    }
+    public List<Session> getSessions()
+    {
+        return sessions;
+    }
+
+    @Override
+    public void update(String message) {
+        operations.add(message);
+
     }
 }

@@ -5,6 +5,7 @@ import gym.Person;
 import gym.management.Sessions.SessionType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Instructor extends Person {
 
@@ -38,4 +39,27 @@ public class Instructor extends Person {
     public void setQualifications(ArrayList<SessionType> qualifications) {
         this.qualifications = qualifications;
     }
+
+    @Override
+    public String toString() {
+
+        String certifiedClassesString = "";
+        for (int i = 0; i < qualifications.size(); i++) {
+            certifiedClassesString += qualifications.get(i);
+            if (i < qualifications.size() - 1) {
+                certifiedClassesString += ", ";
+            }
+        }
+
+        return "ID: " + getId() +
+                " | Name: " + getName() +
+                " | Gender: " + getGender() +
+                " | Birthday: " + getDateOfBirth() +
+                " | Age: " + getAge() +
+                " | Balance: " + getAccountBalance() +
+                " | Role: Instructor" +
+                " | Salary per Hour: " + salaryPerHour +
+                " | Certified Classes: " + certifiedClassesString;
+    }
+
 }

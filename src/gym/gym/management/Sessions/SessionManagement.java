@@ -12,14 +12,8 @@ public class SessionManagement {
 
     public boolean isSessionInFuture(Session session)
     {
+
         return DateUtils.dateNotPassed(session.getDate());
-    }
-    public int getSessionPrice(Session session) {
-        return SessionFactory.getPrice(session.getSessionType());
-    }
-    public int getSessionCapacity(Session session)
-    {
-        return SessionFactory.getCapacity(session.getSessionType());
     }
 
     public static String isClientEligibleForForum(Client client, Session session) {
@@ -41,13 +35,6 @@ public class SessionManagement {
         return null;
     }
 
-    public boolean clientHasSufficientBalance(Client client, Session session) {
-        return client.getAccountBalance() >= getSessionPrice(session);
-    }
-
-    public boolean isSessionAvailable(Session session) {
-        return session.getRegisteredToSession().size() < getSessionCapacity(session);
-    }
 
     public ArrayList<String>validateClientForSession(Client client,Session session)
     {
@@ -59,10 +46,10 @@ public class SessionManagement {
         if (eligibilityError != null) {
             errors.add(eligibilityError);
         }
-        if (!clientHasSufficientBalance(client, session)) {
+        if (!client.clientHasSufficientBalance(session)) {
             errors.add("Failed registration: Insufficient balance for this session");
         }
-        if (!isSessionAvailable(session)) {
+        if (!session.isSessionAvailable()) {
             errors.add("Failed registration: No available places in the session");
         }
         return errors;

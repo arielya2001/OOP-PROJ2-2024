@@ -10,4 +10,8 @@ public class InstructorManagement {
     {
         return (instructor.getQualifications().contains(sessionType));
     }
+
+
+
+    
 }

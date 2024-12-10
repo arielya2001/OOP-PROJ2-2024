@@ -1,25 +1,34 @@
 package gym;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class DateUtils {
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    public static LocalDate parseDate(String date) throws DateTimeParseException {
-        return LocalDate.parse(date, DATE_FORMAT);
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+
+    public static LocalDate parseDate(String date) throws DateTimeException {
+        if (date.length()>10)
+        {
+            date=date.substring(0,10);
+        }
+        return LocalDate.parse(date, FORMATTER);
     }
-    public static boolean isOverAge(String dateOfBirth, int age) throws DateTimeParseException {
-        LocalDate birthDate = parseDate(dateOfBirth);
-        LocalDate today = LocalDate.now();
-        Period period = Period.between(birthDate, today);
-        return period.getYears() >= age;
+
+    public static String formatDate(LocalDate date) {
+        return date.format(FORMATTER);
     }
-    public static int calculateAge(String dateOfBirth) throws DateTimeParseException {
-        LocalDate birthDate = parseDate(dateOfBirth);
-        LocalDate today = LocalDate.now();
-        return Period.between(birthDate, today).getYears();
+
+
+    public static boolean isOverAge(String birthDate, int age) {
+        LocalDate date = parseDate(birthDate);
+        return date.plusYears(age).isBefore(LocalDate.now()) || date.plusYears(age).isEqual(LocalDate.now());
+    }
+
+    public static boolean dateNotPassed(String date) {
+        return parseDate(date).isAfter(LocalDate.now());
     }
 }

@@ -9,41 +9,72 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Gym {
-    private static Gym gym=new Gym();
-    private String name;
+public class Gym  {
+    private static final Gym gym = new Gym();
     private Secretary secretary;
-    private List<Client> clients=new ArrayList<>();
-    private List<Instructor> instructors=new ArrayList<>();
-    private List<Session>sessions=new ArrayList<>();
+    private List<Client> clients = new ArrayList<>();
+    private List<Instructor> instructors = new ArrayList<>();
+    private List<Session> sessions = new ArrayList<>();
+    private List<String> operations = new ArrayList<>();
+    private int balance;
+    private String name;
 
-    private Gym(){
+    private Gym() {
 
     }
 
-    public static Gym getInstance()
-    {
+    public static Gym getInstance() {
         return gym;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getName() {
-        return name;
     }
 
     public Secretary getSecretary() {
-        return secretary;
+        return this.secretary;
     }
+
 
     public List<Client> getClients() {
         return clients;
     }
-    public void setSecretary(Person person, int salaryPerMonth) {
-        if (!(person instanceof Secretary)) {
-            Secretary secretary = new Secretary();
-            this.secretary = secretary;
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public void addToBalance(int amount) {
+        setBalance(balance + amount);
+
+    }
+
+    public List<String> getOperations() {
+        return operations;
+    }
+
+    public void addOperations(String action) {
+        operations.add(action);
+    }
+
+    public void disableSecretary() {
+        if (this.secretary != null) {
+            this.secretary.disabled();
+            this.secretary = null;
         }
+    }
+
+    public void setSecretary(Person person, int salary) {
+        disableSecretary();
+        this.secretary = new Secretary(person, salary);
+    }
+
+    public List<Session> getSessions() {
+        return sessions;
     }
 
 }

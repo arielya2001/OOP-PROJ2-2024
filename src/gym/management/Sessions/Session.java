@@ -5,14 +5,13 @@ import gym.customers.Client;
 import gym.management.Instructor;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Session {
     private SessionType sessionType;
     private String date;
     private ForumType forumType;
     private Instructor instructor;
-    private List<Client>registeredToSession;
+    private ArrayList<Client>registeredToSession;
 
     public Session(SessionType sessionType,String date,ForumType forumType,Instructor instructor){
         this.sessionType=sessionType;
@@ -54,7 +53,47 @@ public class Session {
         this.instructor = instructor;
     }
 
-    public List<Client> getRegisteredToSession() {
+    public ArrayList<Client> getRegisteredToSession() {
         return registeredToSession;
     }
+
+    public void registerClient(Client client) {
+        registeredToSession.add(client);
+    }
+
+    public int getCapacity()
+    {
+
+        return SessionFactory.getCapacity(sessionType);
+    }
+    public int getSessionPrice() {
+
+        return SessionFactory.getPrice(sessionType);
+    }
+
+    public boolean isSessionAvailable() {
+        return getRegisteredToSession().size() < getCapacity();
+    }
+    public boolean isRegisteredForSession(Client client) {
+
+        for(Client c: registeredToSession)
+        {
+            if (c.getId()==client.getId()&&c.getName().equals( client.getName()))
+                return true;
+
+        }
+        return false;
+    }
+    public String toString() {
+
+
+        return "Session Type: " + sessionType +
+                " | Date: " + date +
+                " | Forum: " + forumType +
+                " | Instructor: " + instructor +
+                " | Participants: " + registeredToSession.size()+"/"+getCapacity();
+
+    }
+
+
 }

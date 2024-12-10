@@ -1,15 +1,21 @@
 package gym.Exception;
 
 public class ClientNotRegisteredException extends Exception {
-    public ClientNotRegisteredException(String message) {
+
+    public ClientNotRegisteredException (String message)
+    {
         super(message);
     }
 
-    public ClientNotRegisteredException(Throwable cause) {
-        super(cause);
+
+    public ClientNotRegisteredException (Throwable e)
+    {
+        super(e);
     }
 
-    public ClientNotRegisteredException(String message, Throwable cause) {
-        super(message, cause);
+    public ClientNotRegisteredException(String message, Throwable e)
+    {
+        super(message,e);
     }
+
 }

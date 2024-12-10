@@ -1,15 +1,21 @@
 package gym.Exception;
 
 public class InvalidAgeException extends Exception {
-    public InvalidAgeException(String message) {
+
+
+    public InvalidAgeException (String message)
+    {
         super(message);
     }
 
-    public InvalidAgeException(Throwable cause) {
-        super(cause);
+    public InvalidAgeException (Throwable e)
+    {
+        super(e);
     }
 
-    public InvalidAgeException(String message, Throwable cause) {
-        super(message, cause);
+    public InvalidAgeException(String message, Throwable e)
+    {
+        super(message,e);
     }
+
 }

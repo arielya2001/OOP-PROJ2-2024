@@ -1,15 +1,21 @@
 package gym.Exception;
 
 public class DuplicateClientException extends Exception {
-    public DuplicateClientException(String message) {
+
+
+    public DuplicateClientException (String message)
+    {
         super(message);
     }
 
-    public DuplicateClientException(Throwable cause) {
-        super(cause);
+    public DuplicateClientException (Throwable e)
+    {
+        super(e);
     }
 
-    public DuplicateClientException(String message, Throwable cause) {
-        super(message, cause);
+    public DuplicateClientException(String message, Throwable e)
+    {
+        super(message,e);
     }
+
 }

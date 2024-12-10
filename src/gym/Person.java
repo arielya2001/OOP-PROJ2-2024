@@ -5,9 +5,12 @@ public class Person {
     private Gender gender;
     private int accountBalance;
     private  String dateOfBirth;
+    private static int nextId=1110;
+    private int id;
 
     public Person(String name,int accountBalance,Gender gender, String dateOfBirth)
     {
+        this.id=nextId++;
         this.name=name;
         this.accountBalance=accountBalance;
         this.gender=gender;
@@ -30,6 +33,10 @@ public class Person {
         return this.dateOfBirth;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -49,4 +56,29 @@ public class Person {
     {
         return DateUtils.isOverAge(getDateOfBirth(),Age);
     }
+
+    public int getAge()
+    {
+        int currentYear=2024;
+        String birthYear=dateOfBirth.substring(6,10);
+        int year=Integer.parseInt(birthYear);
+        return currentYear-year;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Person person = (Person) obj;
+        return id == person.id;
+    }
+
+
+    public String toString()
+    {
+        return String.format("ID: %d | Name: %s | Gender: %s | Birthday: %s | Age: %d | Balance: %d",
+                id, name, gender, dateOfBirth, getAge(), accountBalance);
+    }
+
 }

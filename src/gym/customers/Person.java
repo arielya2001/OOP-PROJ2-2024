@@ -13,7 +13,7 @@ public class Person {
     private final int id;
 
     public Person(String name, int accountBalance, Gender gender, String dateOfBirth) {
-        this.id = nextId++;
+        this.id = ++nextId;
         this.name = name;
         this.accountBalance = accountBalance;
         this.gender = gender;

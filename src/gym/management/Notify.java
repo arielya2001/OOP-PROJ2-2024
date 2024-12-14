@@ -12,15 +12,12 @@ public class Notify {
 
     // Notify all clients in the gym
     public void notifyAllClients(String message) {
-        for (Client client : gym.getClients()) {
-            client.addNotification(message); // Use the safe method to add notifications
-        }
+        gym.notifyClients(message); // Use the observer mechanism
     }
 
-    // Notify all clients registered to a specific session
     public void notifySession(Session session, String message) {
         for (Client client : session.getRegisteredToSession()) {
-            client.addNotification(message); // Use the safe method to add notifications
+            client.update(message); // Notify specific clients
         }
     }
 
@@ -35,15 +32,15 @@ public class Notify {
         for (Session session : gym.getSessions()) {
             String sessionDateFormatted = session.getDate().toLocalDate().format(outputFormatter);
             if (sessionDateFormatted.equals(reformattedDate)) {
-                for (Client client : session.getRegisteredToSession()) {
-                    client.addNotification(message);
-                }
+                // Use notifySession to utilize the observer mechanism for all session participants
+                notifySession(session, message);
             }
         }
 
         // Use reformatted date for consistent logging
         gym.addOperations("A message was sent to everyone registered for a session on " + reformattedDate + " : " + message);
     }
+
 
 
 

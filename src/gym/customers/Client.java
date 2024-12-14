@@ -2,6 +2,7 @@ package gym.customers;
 
 import gym.management.Gym;
 import gym.management.Instructor;
+import gym.management.Observer;
 import gym.management.Sessions.Session;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class Client extends Person {
+public class Client extends Person implements Observer {
     private List<String> notifications;
 
 
@@ -19,15 +20,9 @@ public class Client extends Person {
     }
 
 
-
-
-
-
     public boolean clientHasSufficientBalance(Session session) {
         return getAccountBalance() >= session.getSessionPrice();
     }
-
-
 
 
     public List<String> getNotifications() {
@@ -57,8 +52,10 @@ public class Client extends Person {
             System.out.println("Insufficient balance for: " + getName());
         }
     }
-
-
+    @Override
+    public void update(String message) {
+        addNotification(message);
+    }
 
 
     @Override
@@ -80,7 +77,5 @@ public class Client extends Person {
         return String.format("ID: %d | Name: %s | Gender: %s | Birthday: %s | Age: %d | Balance: %d",
                 getId(), getName(), getGender(), getDateOfBirth(), getAge(), getAccountBalance());
     }
-
-
 
 }

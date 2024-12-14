@@ -6,7 +6,7 @@ import gym.management.Sessions.Session;
 
 import java.util.*;
 
-public class Gym {
+public class Gym implements Subject {
     private static final Gym gym = new Gym();
     private Secretary secretary;
     private final Map<Integer, Person> people = new HashMap<>();
@@ -14,7 +14,10 @@ public class Gym {
     private List<Instructor> instructors = new ArrayList<>();
     private List<Session> sessions = new ArrayList<>();
     private List<String> operations = new ArrayList<>();
-    private final Map<Integer, Integer> balanceHistory = new HashMap<>(); // ID -> Last Known Balance
+    private final Map<Integer, Integer> balanceHistory = new HashMap<>();
+    private List<Observer> observers = new ArrayList<>(); // Observers list
+
+
     private int balance=0;
     private String name;
     private Gym() {
@@ -77,6 +80,7 @@ public class Gym {
         people.put(client.getId(), client);
         if (!clients.contains(client)) {
             clients.add(client);
+            addObserver(client);
         }
     }
 
@@ -186,5 +190,31 @@ public class Gym {
 
         return sb.toString();
     }
+    @Override
+    public void addObserver(Observer observer) {
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
+    }
+
+    public void notifyClients(String message) {
+        notifyObservers(message);
+        operations.add("Notified all observers: " + message);
+    }
+
+
+
 
 }

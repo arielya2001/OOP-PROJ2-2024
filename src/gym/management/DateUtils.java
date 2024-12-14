@@ -1,4 +1,4 @@
-package gym;
+package gym.management;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;

@@ -1,10 +1,8 @@
 package gym.customers;
 
-import gym.Exception.ClientNotRegisteredException;
 import gym.Exception.DuplicateClientException;
 import gym.Exception.InvalidAgeException;
-import gym.Gym;
-import gym.Person;
+import gym.management.Gym;
 
 public class ClientManagement {
 

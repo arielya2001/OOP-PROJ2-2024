@@ -1,5 +1,3 @@
-package gym;
-
 import gym.Exception.*;
 import gym.customers.*;
 import gym.management.*;

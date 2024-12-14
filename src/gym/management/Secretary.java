@@ -4,14 +4,12 @@ import gym.Exception.ClientNotRegisteredException;
 import gym.Exception.DuplicateClientException;
 import gym.Exception.InstructorNotQualifiedException;
 import gym.Exception.InvalidAgeException;
-import gym.Gender;
-import gym.Gym;
-import gym.Person;
 import gym.customers.Client;
 import gym.customers.ClientManagement;
+import gym.customers.Gender;
+import gym.customers.Person;
 import gym.management.Sessions.*;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -57,15 +55,15 @@ public class Secretary extends Person {
 
         // Check for duplicate registration
         if (gym.getClients().stream().anyMatch(client -> client.getId() == person.getId())) {
-            throw new DuplicateClientException("Error: The client is already registered.");
+            throw new DuplicateClientException("Error: The client is already registered");
         }
 
         // Validate age
         if (person.getAge() < 18) {
-            throw new InvalidAgeException("Error: Client must be at least 18 years old to register.");
+            throw new InvalidAgeException("Error: Client must be at least 18 years old to register");
         }
 
-        // Create client using the existing Person ID
+        // Create client using the existing gym.customers.Person ID
         Client client = new Client(person);
         gym.addClient(client);
         gym.addOperations("Registered new client: " + client.getName());
@@ -140,7 +138,7 @@ public class Secretary extends Person {
 
         // Add to instructors list
         gym.addInstructor(instructor);
-        gym.addOperations("Hired new instructor: " + instructor);
+        gym.addOperations("Hired new instructor: " + instructor.getName() + " with salary per hour: " + instructor.getSalaryPerHour());
 
         // Ensure the balance is in sync
         gym.getPeopleMap().put(instructor.getId(), instructor);
@@ -216,16 +214,18 @@ public class Secretary extends Person {
         if (session != null) {
             notification.notifySession(session, message);
             gym.addOperations("A message was sent to everyone registered for session " + session.getSessionType() +
-                    " on " + session.getDate() + " : " + message);
+                    " on " + session.getDate() +
+                    " : " + message);
         } else {
             gym.addOperations("Failed to notify: Session is null.");
         }
     }
 
 
+
+
     public void notify(String date, String message) {
         notification.notifyByDate(date, message);
-        gym.addOperations("A message was sent to everyone registered for a session on " + date + " : " + message);
     }
 
     public void notify(String message) {

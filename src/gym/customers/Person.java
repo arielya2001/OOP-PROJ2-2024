@@ -1,4 +1,6 @@
-package gym;
+package gym.customers;
+
+import gym.management.DateUtils;
 
 import java.util.Objects;
 
@@ -7,7 +9,7 @@ public class Person {
     private Gender gender;
     private int accountBalance;
     private  String dateOfBirth;
-    private static int nextId=1110;
+    private static int nextId=1111;
     private final int id;
 
     public Person(String name, int accountBalance, Gender gender, String dateOfBirth) {

@@ -1,8 +1,7 @@
-package gym;
+package gym.management;
 
 import gym.customers.Client;
-import gym.management.Instructor;
-import gym.management.Secretary;
+import gym.customers.Person;
 import gym.management.Sessions.Session;
 
 import java.util.*;
@@ -18,12 +17,6 @@ public class Gym {
     private final Map<Integer, Integer> balanceHistory = new HashMap<>(); // ID -> Last Known Balance
     private int balance=0;
     private String name;
-    private static int nextId = 1110; // Centralized ID counter
-
-    public static synchronized int getNextId() {
-        int id = nextId++;
-        return id;
-    }
     private Gym() {
         this.name = "CrossFit"; //שם דיפולטיבי
 

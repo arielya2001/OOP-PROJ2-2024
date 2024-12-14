@@ -1,9 +1,9 @@
 package gym.management;
 
-import gym.Gym;
 import gym.customers.Client;
 import gym.management.Sessions.Session;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Notify {
@@ -26,16 +26,26 @@ public class Notify {
 
     // Notify all clients registered for sessions on a specific date
     public void notifyByDate(String date, String message) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        // Ensure consistent formatting for date comparison and output
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String reformattedDate = LocalDate.parse(date, inputFormatter).format(outputFormatter);
 
         for (Session session : gym.getSessions()) {
-            String sessionDateFormatted = session.getDate().toLocalDate().format(formatter);
-            if (sessionDateFormatted.equals(date)) {
+            String sessionDateFormatted = session.getDate().toLocalDate().format(outputFormatter);
+            if (sessionDateFormatted.equals(reformattedDate)) {
                 for (Client client : session.getRegisteredToSession()) {
-                    client.addNotification(message); // Add notification to the client
+                    client.addNotification(message);
                 }
             }
         }
+
+        // Use reformatted date for consistent logging
+        gym.addOperations("A message was sent to everyone registered for a session on " + reformattedDate + " : " + message);
     }
+
+
+
 
 }

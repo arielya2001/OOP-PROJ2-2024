@@ -1,6 +1,6 @@
 package gym.management;
 
-import gym.Person;
+import gym.customers.Person;
 import gym.management.Sessions.SessionType;
 
 import java.util.ArrayList;
@@ -32,8 +32,14 @@ public class Instructor extends Person {
 
     @Override
     public String toString() {
-        return String.format("ID: %d | Name: %s | Gender: %s | Birthday: %s | Age: %d | Balance: %d | Role: Instructor | Salary per Hour: %d | Certified Classes: %s",
-                getId(), getName(), getGender(), getDateOfBirth(), getAge(), getAccountBalance(), salaryPerHour, qualifications);
+        StringBuilder certifiedClassesStr = new StringBuilder();
+        for (SessionType sessionType : qualifications) {
+            if (certifiedClassesStr.length() > 0) {
+                certifiedClassesStr.append(", ");
+            }
+            certifiedClassesStr.append(sessionType.name());
+        }
+        return String.format("ID: %d | Name: %s | Gender: %s | Birthday: %s | Age: %d | Balance: %d | Role: %s | Salary per Hour: %d | Certified Classes: %s",
+                getId(), getName(), getGender(), getDateOfBirth(), getAge(), getAccountBalance(), "Instructor", salaryPerHour, certifiedClassesStr.toString());
     }
-
 }

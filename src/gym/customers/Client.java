@@ -1,13 +1,13 @@
 package gym.customers;
 
-import gym.Gym;
+import gym.management.Gym;
 import gym.management.Instructor;
-import gym.Person;
 import gym.management.Sessions.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 
 public class Client extends Person {
     private List<String> notifications;
@@ -37,7 +37,7 @@ public class Client extends Person {
         return notifications;
     }
     public void addNotification(String message) {
-        getNotifications().add(message); // Use getter to ensure initialization
+        getNotifications().add(message);
     }
 
     public void deductBalance(int price) {

@@ -1,6 +1,6 @@
 package gym.management.Sessions;
 
-import gym.DateUtils;
+import gym.management.DateUtils;
 import gym.customers.Client;
 import gym.management.Instructor;
 
@@ -71,10 +71,9 @@ public abstract class Session {
 
     @Override
     public String toString() {
-        return "Session Type: " + sessionType +
-                " | Date: " + date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) +
-                " | Forum: " + forumType +
-                " | Instructor: " + instructor.getName() +
-                " | Participants: " + registeredToSession.size() + "/" + getCapacity();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return String.format("Session Type: %s | Date: %s | Forum: %s | Instructor: %s | Participants: %d/%d",
+                sessionType, date.format(formatter), forumType, instructor.getName(), registeredToSession.size(), getCapacity());
     }
+
 }

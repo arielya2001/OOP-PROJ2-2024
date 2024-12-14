@@ -1,6 +1,6 @@
 package gym.management.Sessions;
 
-import gym.Gender;
+import gym.customers.Gender;
 import gym.customers.Client;
 
 import java.time.LocalDateTime;
@@ -52,10 +52,10 @@ public class SessionManagement {
             errors.add(eligibilityError);
         }
         if (!client.clientHasSufficientBalance(session)) {
-            errors.add("Failed registration: Insufficient balance for this session");
+            errors.add("Failed registration: Client doesn't have enough balance");
         }
         if (!session.isSessionAvailable()) {
-            errors.add("Failed registration: No available places in the session");
+            errors.add("Failed registration: No available spots for session");
         }
         return errors;
     }

@@ -1,5 +1,5 @@
 **RECENTLY ADDED**:
-FIXED STRUCT, OutputComperator, Balance calculation, Notify and etc.
+FIXED STRUCT, OutputComperator, Balance calculation, Notify(now Client class is an Observer and Gym class is the Subject)  and etc.
 
 
 gym.customers.Person

@@ -1,5 +1,12 @@
-**RECENTLY ADDED**:
-FIXED STRUCT, OutputComperator, Balance calculation, Notify and etc.
+**RECENTLY ADDED:
+FIXED STRUCT, OutputComperator, Balance calculation, Notify(now Client class is an Observer and Gym class is the Subject)  and etc.
+Secreteries - added list of secreteries to track the old ones and be able to throw the error:
+Error: Former secretaries are not permitted to perform actions
+ID - started from 1111 instead of 1110(don't know if true or not)
+people HashMap - The people map is checked to see if the person already exists. If yes, the existing Person object is reused instead of creating a duplicate. Also easier to search with unique ID. SEE EXAMPLE IN "addClient" METHOD
+BalanceHistory HashMap - key is the ID of the person, value is the most recenet balance he has. good when changing roles of people in the gym
+Current YEAR IS 2024, NEED TO CHANGE TO 2025??**
+
 
 
 gym.customers.Person

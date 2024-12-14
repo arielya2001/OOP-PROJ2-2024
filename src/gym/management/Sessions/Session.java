@@ -64,10 +64,13 @@ public abstract class Session {
 
 
     public boolean isRegisteredForSession(Client client) {
-        boolean isRegistered = registeredToSession.stream().anyMatch(c -> c.getId() == client.getId());
-        return isRegistered;
+        for (Client c : registeredToSession) {
+            if (c.getId() == client.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
-
 
     @Override
     public String toString() {

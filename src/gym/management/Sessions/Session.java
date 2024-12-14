@@ -57,7 +57,7 @@ public abstract class Session {
 
     public void registerClient(Client client) {
         if (isRegisteredForSession(client)) {
-            return; // Prevent duplicate registration
+            return;
         }
         registeredToSession.add(client);
     }

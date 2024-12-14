@@ -16,8 +16,7 @@ public class Gym implements Subject {
     private List<String> operations = new ArrayList<>();
     private final Map<Integer, Integer> balanceHistory = new HashMap<>();
     private List<Observer> observers = new ArrayList<>(); // Observers list
-
-
+    private List<Secretary> allSecretaries = new ArrayList<>();
     private int balance=0;
     private String name;
     private Gym() {
@@ -59,7 +58,6 @@ public class Gym implements Subject {
         Person existingPerson = people.get(instructor.getId());
         if (existingPerson != null) {
             if (!(existingPerson instanceof Instructor)) {
-                // Transform to an Instructor
                 instructor = new Instructor(existingPerson, instructor.getSalaryPerHour(), instructor.getQualifications());
             }
         }
@@ -73,7 +71,6 @@ public class Gym implements Subject {
         Person existingPerson = people.get(client.getId());
         if (existingPerson != null) {
             if (!(existingPerson instanceof Client)) {
-                // Transform to a Client
                 client = new Client(existingPerson);
             }
         }
@@ -109,14 +106,12 @@ public class Gym implements Subject {
         operations.add(action);
     }
 
-    public void disableSecretary() {
-        if (this.secretary != null) {
-            this.secretary.disabled();
-            this.secretary = null;
-        }
-    }
 
     public void setSecretary(Person person, int salary) {
+        if (this.secretary != null) {
+            allSecretaries.add(this.secretary);
+
+        }
         // Fetch the latest known balance from balance history
         int inheritedBalance = gym.getLastKnownBalance(person.getId());
 
@@ -127,8 +122,11 @@ public class Gym implements Subject {
 
         // Update the global map
         gym.people.put(this.secretary.getId(), this.secretary);
-
     }
+    public List<Secretary> getAllSecretaries() {
+        return new ArrayList<>(allSecretaries); // Return a copy to preserve encapsulation
+    }
+
     public List<Session> getSessions() {
         return sessions;
     }

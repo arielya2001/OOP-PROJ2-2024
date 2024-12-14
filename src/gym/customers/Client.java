@@ -27,7 +27,7 @@ public class Client extends Person implements Observer {
 
     public List<String> getNotifications() {
         if (notifications == null) {
-            notifications = new ArrayList<>(); // Safeguard against null
+            notifications = new ArrayList<>();
         }
         return notifications;
     }
@@ -39,12 +39,17 @@ public class Client extends Person implements Observer {
         int newBalance = getAccountBalance() - price;
         if (newBalance >= 0) {
             setAccountBalance(newBalance);
-            // Sync balance with the Instructor list if this person is also an instructor
+
             Gym gym = Gym.getInstance();
-            Instructor instructor = gym.getInstructors().stream()
-                    .filter(inst -> inst.getId() == this.getId())
-                    .findFirst()
-                    .orElse(null);
+            Instructor instructor = null;
+
+            for (Instructor inst : gym.getInstructors()) {
+                if (inst.getId() == this.getId()) {
+                    instructor = inst;
+                    break;
+                }
+            }
+
             if (instructor != null) {
                 instructor.setAccountBalance(newBalance);
             }
@@ -52,6 +57,7 @@ public class Client extends Person implements Observer {
             System.out.println("Insufficient balance for: " + getName());
         }
     }
+
     @Override
     public void update(String message) {
         addNotification(message);

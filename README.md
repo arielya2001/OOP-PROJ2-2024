@@ -1,3 +1,7 @@
+**RECENTLY ADDED**:
+FIXED STRUCT, OutputComperator, Balance calculation, Notify and etc.
+
+
 gym.customers.Person
 Attributes:
 name (String)

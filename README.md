@@ -1,5 +1,8 @@
-**RECENTLY ADDED**:
+**RECENTLY ADDED:
 FIXED STRUCT, OutputComperator, Balance calculation, Notify(now Client class is an Observer and Gym class is the Subject)  and etc.
+Secreteries - added list of secreteries to track the old ones and be able to throw the error:
+Error: Former secretaries are not permitted to perform actions
+ID - started from 1111 instead of 1110(don't know if true or not)**
 
 
 gym.customers.Person

@@ -44,7 +44,7 @@ Methods:
 gym.customers.Client registerClient(gym.Person person)
 void unregisterClient(gym.customers.Client client)
 gym.management.Instructor hireInstructor(gym.Person person, int hourlyPay, List<gym.management.Sessions.SessionType> qualifications)
-gym.management.Sessions.Session addSession(gym.management.Sessions.SessionType type, String dateTime, gym.ForumType forum, gym.management.Instructor instructor)
+gym.management.Sessions.Session addSession(gym.management.Sessions.SessionType type, String dateTime, gym.management.Sessions.ForumType forum, gym.management.Instructor instructor)
 void registerClientToLesson(gym.customers.Client client, gym.management.Sessions.Session session)
 void notify(gym.management.Sessions.Session session, String message)
 void notify(String date, String message)
@@ -68,17 +68,17 @@ void setSecretary(gym.Person person, int salary)
 Attributes:
 gym.management.Sessions.SessionType type
 String dateTime
-gym.ForumType forum
+gym.management.Sessions.ForumType forum
 gym.management.Instructor instructor
 
 Methods:
-gym.management.Sessions.Session(gym.management.Sessions.SessionType type, String dateTime, gym.ForumType forum, gym.management.Instructor instructor)
+gym.management.Sessions.Session(gym.management.Sessions.SessionType type, String dateTime, gym.management.Sessions.ForumType forum, gym.management.Instructor instructor)
 gym.management.Sessions.SessionType getType()
 void setType(gym.management.Sessions.SessionType type)
 String getDateTime()
 void setDateTime(String dateTime)
-gym.ForumType getForum()
-void setForum(gym.ForumType forum)
+gym.management.Sessions.ForumType getForum()
+void setForum(gym.management.Sessions.ForumType forum)
 gym.management.Instructor getInstructor()
 void setInstructor(gym.management.Instructor instructor)
 String toString()
@@ -95,7 +95,7 @@ ThaiBoxing
 MachinePilates
 Ninja
 
-gym.ForumType:
+gym.management.Sessions.ForumType:
 All
 Male
 Female

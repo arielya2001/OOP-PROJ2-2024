@@ -1,99 +1,80 @@
 package gym.management.Sessions;
 
-import gym.ForumType;
+import gym.DateUtils;
 import gym.customers.Client;
 import gym.management.Instructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Session {
-    private SessionType sessionType;
-    private String date;
+public abstract class Session {
+    private final SessionType sessionType;
+    private LocalDateTime date;
     private ForumType forumType;
     private Instructor instructor;
-    private ArrayList<Client>registeredToSession;
+    private ArrayList<Client> registeredToSession;
 
-    public Session(SessionType sessionType,String date,ForumType forumType,Instructor instructor){
-        this.sessionType=sessionType;
-        this.date=date;
-        this.forumType=forumType;
-        this.instructor=instructor;
-        registeredToSession=new ArrayList<>();
-    }
-
-    public SessionType getSessionType() {
-        return this.sessionType;
-    }
-
-    public void setSessionType(SessionType sessionType) {
+    public Session(SessionType sessionType, String date, ForumType forumType, Instructor instructor) {
         this.sessionType = sessionType;
+        this.date = DateUtils.parseDateTime(date);
+        this.forumType = forumType;
+        this.instructor = instructor;
+        this.registeredToSession = new ArrayList<>();
     }
 
-    public String getDate() {
-        return this.date;
+
+
+    public abstract int getSessionPrice();
+    public abstract int getCapacity();
+    public abstract boolean isInstructorQualified(Instructor instructor);
+
+    // Getter methods
+    public SessionType getSessionType() {
+        return sessionType;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public LocalDateTime getDate() {
+        return date;
     }
 
     public ForumType getForumType() {
-        return this.forumType;
-    }
-
-    public void setForumType(ForumType forumType) {
-        this.forumType = forumType;
+        return forumType;
     }
 
     public Instructor getInstructor() {
-        return this.instructor;
-    }
-
-    public void setInstructor(Instructor instructor){
-        this.instructor = instructor;
+        return instructor;
     }
 
     public ArrayList<Client> getRegisteredToSession() {
         return registeredToSession;
     }
 
-    public void registerClient(Client client) {
-        registeredToSession.add(client);
-    }
-
-    public int getCapacity()
-    {
-
-        return SessionFactory.getCapacity(sessionType);
-    }
-    public int getSessionPrice() {
-
-        return SessionFactory.getPrice(sessionType);
-    }
-
+    // Business logic methods
     public boolean isSessionAvailable() {
         return getRegisteredToSession().size() < getCapacity();
     }
-    public boolean isRegisteredForSession(Client client) {
 
-        for(Client c: registeredToSession)
-        {
-            if (c.getId()==client.getId()&&c.getName().equals( client.getName()))
-                return true;
-
+    public void registerClient(Client client) {
+        if (isRegisteredForSession(client)) {
+            return; // Prevent duplicate registration
         }
-        return false;
+        registeredToSession.add(client);
     }
+
+
+    public boolean isRegisteredForSession(Client client) {
+        boolean isRegistered = registeredToSession.stream().anyMatch(c -> c.getId() == client.getId());
+        return isRegistered;
+    }
+
+
+    @Override
     public String toString() {
-
-
         return "Session Type: " + sessionType +
-                " | Date: " + date +
+                " | Date: " + date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) +
                 " | Forum: " + forumType +
-                " | Instructor: " + instructor +
-                " | Participants: " + registeredToSession.size()+"/"+getCapacity();
-
+                " | Instructor: " + instructor.getName() +
+                " | Participants: " + registeredToSession.size() + "/" + getCapacity();
     }
-
-
 }

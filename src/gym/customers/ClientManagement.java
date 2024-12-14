@@ -5,43 +5,49 @@ import gym.Exception.DuplicateClientException;
 import gym.Exception.InvalidAgeException;
 import gym.Gym;
 import gym.Person;
-import gym.management.Sessions.Session;
 
 public class ClientManagement {
 
     private Gym gym=Gym.getInstance();
 
-    public Client registerNewClient(Person person) throws InvalidAgeException,DuplicateClientException{
-        if (person.getAge()>18)
-        {
-            Client newClient = new Client(person);
-            if (isClient(newClient)) throw new DuplicateClientException("Error: The client is already registered");
-           else{
-               gym.getClients().add(newClient);
-            }
-            return newClient;
+    public Client registerNewClient(Person person) throws InvalidAgeException, DuplicateClientException {
+        if (person.getAge() <= 18) {
+            throw new InvalidAgeException("Error: Client must be at least 18 years old to register");
         }
-        else throw new InvalidAgeException("Error: Client must be at least 18 years old to register");
 
+        Client newClient = new Client(person);
+        System.out.println("Attempting to register new client: " + newClient);
+
+        if (gym.getClients().contains(newClient)) {
+            System.out.println("Client already exists: " + newClient);
+            throw new DuplicateClientException("Error: The client is already registered");
+        }
+
+        gym.getClients().add(newClient);
+        System.out.println("Registered new client: " + newClient);
+        return newClient;
     }
 
-    public boolean isClient(Client client)
-    {
-       for (Client c: gym.getClients())
-       {
-           if (c.getId()==client.getId())
-               return true;
-       }
-       return false;
+
+
+
+
+
+
+
+
+    public boolean isClient(Client client) {
+        for (Client c : gym.getClients()) {
+            if (c.equals(client)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
 
-    public void removeClient(Client client) throws ClientNotRegisteredException {
-        if (gym.getClients().contains(client))
-            gym.getClients().remove(client);
-        else throw new ClientNotRegisteredException("Error: Registration is required before attempting to unregister");
 
-    }
+
 
 }

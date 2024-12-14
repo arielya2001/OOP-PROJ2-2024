@@ -1,39 +1,44 @@
 package gym.management.Sessions;
 
-import gym.DateUtils;
-import gym.ForumType;
+import gym.Gender;
 import gym.customers.Client;
-import gym.management.Instructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class SessionManagement {
 
 
-    public boolean isSessionInFuture(Session session)
-    {
-
-        return DateUtils.dateNotPassed(session.getDate());
+    public boolean isSessionInFuture(Session session) {
+        return session.getDate().isAfter(LocalDateTime.now());
     }
+
 
     public static String isClientEligibleForForum(Client client, Session session) {
         ForumType forumType = session.getForumType();
 
+        // ForumType.All allows any client
         if (forumType == ForumType.All) {
             return null;
         }
+
+        // Check age for seniors
         if (forumType == ForumType.Seniors && !client.isOverAge(65)) {
             return "Failed registration: Client doesn't meet the age requirements for this session (Seniors)";
         }
-        if (forumType == ForumType.Female && client.getGender().equals("Female")) {
+
+        // Check gender compatibility
+        if (forumType == ForumType.Female && client.getGender() != Gender.Female) {
+            return "Failed registration: Client's gender doesn't match the session's gender requirements";
+        }
+        if (forumType == ForumType.Male && client.getGender() != Gender.Male) {
             return "Failed registration: Client's gender doesn't match the session's gender requirements";
         }
 
-        if (forumType == ForumType.Male && !client.getGender().equals("Male")) {
-            return "Failed registration: Client's gender doesn't match the session's gender requirements";
-        }
+        // No issues
         return null;
     }
+
 
 
     public ArrayList<String>validateClientForSession(Client client,Session session)

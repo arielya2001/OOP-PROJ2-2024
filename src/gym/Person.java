@@ -1,21 +1,30 @@
 package gym;
 
+import java.util.Objects;
+
 public class Person {
     private String name;
     private Gender gender;
     private int accountBalance;
     private  String dateOfBirth;
     private static int nextId=1110;
-    private int id;
+    private final int id;
 
-    public Person(String name,int accountBalance,Gender gender, String dateOfBirth)
-    {
-        this.id=nextId++;
-        this.name=name;
-        this.accountBalance=accountBalance;
-        this.gender=gender;
-        this.dateOfBirth=dateOfBirth;
+    public Person(String name, int accountBalance, Gender gender, String dateOfBirth) {
+        this.id = nextId++;
+        this.name = name;
+        this.accountBalance = accountBalance;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
     }
+    protected Person(int id, String name, int accountBalance, Gender gender, String dateOfBirth) {
+        this.id = id;
+        this.name = name;
+        this.accountBalance = accountBalance;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+    }
+
 
     public String getName() {
         return this.name;
@@ -57,22 +66,30 @@ public class Person {
         return DateUtils.isOverAge(getDateOfBirth(),Age);
     }
 
-    public int getAge()
-    {
-        int currentYear=2024;
-        String birthYear=dateOfBirth.substring(6,10);
-        int year=Integer.parseInt(birthYear);
-        return currentYear-year;
+    public int getAge() {
+        if (dateOfBirth == null || dateOfBirth.length() < 10) {
+            throw new IllegalStateException("Invalid dateOfBirth: " + dateOfBirth);
+        }
+        int currentYear = 2024;
+        String birthYear = dateOfBirth.substring(6, 10);
+        int year = Integer.parseInt(birthYear);
+        return currentYear - year;
     }
+
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-
         Person person = (Person) obj;
-        return id == person.id;
+        return this.getId() == person.getId(); // Compare by ID
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getId());
+    }
+
 
 
     public String toString()

@@ -1,41 +1,21 @@
 package gym.management.Sessions;
 
-import java.util.Map;
+import gym.management.Instructor;
 
 public class SessionFactory {
 
-    public static int getPrice(SessionType sessionType) {
-        switch (sessionType) {
+    public static Session createSession(SessionType type, String date, ForumType forumType, Instructor instructor) {
+        switch (type) {
             case Pilates:
-                return 60;
+                return new PilatesSession(date, forumType, instructor);
             case MachinePilates:
-                return 80;
+                return new MachinePilatesSession(date, forumType, instructor);
             case ThaiBoxing:
-                return 100;
+                return new ThaiBoxingSession(date, forumType, instructor);
             case Ninja:
-                return 150;
+                return new NinjaSession(date, forumType, instructor);
             default:
-                throw new IllegalArgumentException("Unknown session type: " + sessionType);
+                throw new IllegalArgumentException("Unknown session type: " + type);
         }
     }
-
-    public static int getCapacity(SessionType sessionType)
-    {
-        switch (sessionType) {
-            case Pilates:
-                return 30;
-            case MachinePilates:
-                return 10;
-            case ThaiBoxing:
-                return 20;
-            case Ninja:
-                return 5;
-            default:
-                throw new IllegalArgumentException("Unknown session type: " + sessionType);
-        }
-
-    }
-
-
-
 }

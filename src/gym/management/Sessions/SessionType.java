@@ -1,5 +1,8 @@
 package gym.management.Sessions;
 
 public enum SessionType {
-    Pilates,MachinePilates,ThaiBoxing,Ninja
+    Pilates,
+    MachinePilates,
+    ThaiBoxing,
+    Ninja;
 }

@@ -9,11 +9,11 @@ public class Person {
     private Gender gender;
     private int accountBalance;
     private  String dateOfBirth;
-    private static int nextId=1111;
+    private static int nextId=1110;
     private final int id;
 
     public Person(String name, int accountBalance, Gender gender, String dateOfBirth) {
-        this.id = nextId++;
+        this.id = ++nextId;
         this.name = name;
         this.accountBalance = accountBalance;
         this.gender = gender;

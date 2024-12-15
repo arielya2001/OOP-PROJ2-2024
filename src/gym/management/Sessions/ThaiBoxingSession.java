@@ -21,5 +21,6 @@ public class ThaiBoxingSession extends Session {
     @Override
     public boolean isInstructorQualified(Instructor instructor) {
         return instructor.getQualifications().contains(getSessionType());
+        //test
     }
 }

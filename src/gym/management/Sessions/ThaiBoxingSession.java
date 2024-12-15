@@ -5,7 +5,7 @@ import gym.management.Instructor;
 public class ThaiBoxingSession extends Session {
 
     public ThaiBoxingSession(String date, ForumType forumType, Instructor instructor) {
-        super(SessionType.ThaiBoxing, date, forumType, instructor);
+        super(date, forumType, instructor);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class ThaiBoxingSession extends Session {
 
     @Override
     public boolean isInstructorQualified(Instructor instructor) {
-        return instructor.getQualifications().contains(getSessionType());
+        return instructor.getQualifications().contains("ThaiBoxing");
         //test
     }
 }

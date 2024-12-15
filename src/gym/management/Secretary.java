@@ -27,7 +27,7 @@ public class Secretary extends Person {
         this.clientManagement = new ClientManagement();
         this.sessionManagement = new SessionManagement();
         this.instructorManagement = new InstructorManagement();
-        gym.addOperations("A new secretary has started working at the gym: " + this.getName());
+        addOperations("A new secretary has started working at the gym: " + this.getName());
     }
 
     public Secretary(String name, int accountBalance, Gender gender, String dateOfBirth, int salary) {
@@ -36,11 +36,17 @@ public class Secretary extends Person {
         this.clientManagement = new ClientManagement();
         this.sessionManagement = new SessionManagement();
         this.instructorManagement = new InstructorManagement();
-        gym.addOperations("A new secretary has started working at the gym: " + this.getName());
+        addOperations("A new secretary has started working at the gym: " + this.getName());
     }
     public int getSalary() {
         return salary;
     }
+
+    public void addOperations(String action) {
+        Gym gym = Gym.getInstance();
+        gym.getOperations().add(action);
+    }
+
 
 
     public Client registerClient(Person person) throws InvalidAgeException, DuplicateClientException {
@@ -71,7 +77,7 @@ public class Secretary extends Person {
         ArrayList<String> validationErrors = sessionManagement.validateClientForSession(client, session);
 
         for (String error : validationErrors) {
-            gym.addOperations(error);
+            addOperations(error);
         }
 
         if (!validationErrors.isEmpty()) {
@@ -80,16 +86,16 @@ public class Secretary extends Person {
 
         int sessionPrice = session.getSessionPrice();
         client.deductBalance(sessionPrice);
-        gym.addToBalance(sessionPrice);
+        addToBalance(sessionPrice);
         session.registerClient(client);
-        gym.addOperations("Registered client: " + client.getName() + " to session: " +
+        addOperations("Registered client: " + client.getName() + " to session: " +
                 session.getSessionType() + " on " + session.getDate() + " for price: " + sessionPrice);
     }
 
 
 
 
-    public Instructor hireInstructor(Person person, int salaryPerHour, ArrayList<SessionType> qualifications) {
+    public Instructor hireInstructor(Person person, int salaryPerHour, ArrayList<String> qualifications) {
 
         Person existingPerson = gym.getPeopleMap().get(person.getId());
         if (existingPerson == null) {
@@ -99,7 +105,7 @@ public class Secretary extends Person {
         Instructor instructor = new Instructor(existingPerson, salaryPerHour, qualifications);
 
         instructorManagement.addInstructor(instructor, gym.getInstructors());
-        gym.addOperations("Hired new instructor: " + instructor.getName() + " with salary per hour: " + instructor.getSalaryPerHour());
+        addOperations("Hired new instructor: " + instructor.getName() + " with salary per hour: " + instructor.getSalaryPerHour());
 
         gym.getPeopleMap().put(instructor.getId(), instructor);
 
@@ -107,7 +113,7 @@ public class Secretary extends Person {
     }
 
 
-    public Session addSession(SessionType sessionType, String date, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException {
+    public Session addSession(String sessionType, String date, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException {
         InstructorManagement instructorManagement = new InstructorManagement();
         if (!instructorManagement.isQualified(sessionType, instructor)) {
             throw new InstructorNotQualifiedException("Error: Instructor is not qualified to conduct this session type.");
@@ -119,10 +125,16 @@ public class Secretary extends Person {
         Session session = SessionFactory.createSession(sessionType, date, forumType, instructor);
 
         gym.getSessions().add(session);
-        gym.addOperations("Created new session: " + session.getSessionType() +
+        addOperations("Created new session: " + sessionType +
                 " on " + session.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")) +
                 " with instructor: " + instructor.getName());
         return session;
+    }
+
+    public void addToBalance(int amount) {
+        Gym gym = Gym.getInstance();
+        int currentBalance = gym.getBalance();
+        gym.setBalance(currentBalance + amount);
     }
 
 
@@ -132,7 +144,7 @@ public class Secretary extends Person {
         if (gym.getSecretary() != null) {
             Secretary secretary = gym.getSecretary();
             int secretarySalary = secretary.getSalary();
-            gym.addToBalance(-secretarySalary);
+            addToBalance(-secretarySalary);
         }
         int totalInstructorSalary = 0;
 
@@ -164,19 +176,19 @@ public class Secretary extends Person {
             }
         }
 
-        gym.addToBalance(-totalInstructorSalary);
-        gym.addOperations("Salaries have been paid to all employees");
+        addToBalance(-totalInstructorSalary);
+        addOperations("Salaries have been paid to all employees");
     }
 
 
     public void notify(Session session, String message) {
         if (session != null) {
             notification.notifySession(session, message);
-            gym.addOperations("A message was sent to everyone registered for session " + session.getSessionType() +
+            addOperations("A message was sent to everyone registered for session " + session.getSessionType() +
                     " on " + session.getDate() +
                     " : " + message);
         } else {
-            gym.addOperations("Failed to notify: Session is null.");
+            addOperations("Failed to notify: Session is null.");
         }
     }
 
@@ -186,7 +198,7 @@ public class Secretary extends Person {
 
     public void notify(String message) {
         notification.notifyAllClients(message);
-        gym.addOperations("A message was sent to all gym clients: " + message);
+        addOperations("A message was sent to all gym clients: " + message);
     }
 
 

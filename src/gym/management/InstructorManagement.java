@@ -1,15 +1,21 @@
 package gym.management;
 
 import gym.management.Sessions.Session;
-import gym.management.Sessions.SessionType;
 
 import java.util.List;
 
 public class InstructorManagement {
 
-    public boolean isQualified(SessionType sessionType, Instructor instructor) {
-        return instructor.getQualifications().contains(sessionType);
+    public boolean isQualified(String sessionType, Instructor instructor) {
+        // Compare session type using the session class name (e.g., "Pilates", "Ninja")
+        for (String qualification : instructor.getQualifications()) {
+            if (qualification.equalsIgnoreCase(sessionType)) {
+                return true;
+            }
+        }
+        return false;
     }
+
 
     public boolean isInstructorAvailable(Instructor instructor, List<Session> sessions, String sessionDateTime) {
         for (Session session : sessions) {

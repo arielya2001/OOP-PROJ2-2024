@@ -54,32 +54,6 @@ public class Gym implements Subject {
         return instructors;
     }
 
-    public void addInstructor(Instructor instructor) {
-        Person existingPerson = people.get(instructor.getId());
-        if (existingPerson != null) {
-            if (!(existingPerson instanceof Instructor)) {
-                instructor = new Instructor(existingPerson, instructor.getSalaryPerHour(), instructor.getQualifications());
-            }
-        }
-        people.put(instructor.getId(), instructor);
-        if (!instructors.contains(instructor)) {
-            instructors.add(instructor);
-        }
-    }
-
-    public void addClient(Client client) {
-        Person existingPerson = people.get(client.getId());
-        if (existingPerson != null) {
-            if (!(existingPerson instanceof Client)) {
-                client = new Client(existingPerson);
-            }
-        }
-        people.put(client.getId(), client);
-        if (!clients.contains(client)) {
-            clients.add(client);
-            addObserver(client);
-        }
-    }
 
     public int getBalance() {
         return balance;
@@ -93,38 +67,25 @@ public class Gym implements Subject {
         this.balance = balance;
     }
 
-    public void addToBalance(int amount) {
-        this.balance += amount;
-    }
-
-
     public List<String> getOperations() {
         return operations;
     }
-
-    public void addOperations(String action) {
-        operations.add(action);
-    }
-
 
     public void setSecretary(Person person, int salary) {
         if (this.secretary != null) {
             allSecretaries.add(this.secretary);
 
         }
-        // Fetch the latest known balance from balance history
         int inheritedBalance = gym.getLastKnownBalance(person.getId());
 
 
-        // Create the new Secretary instance and assign the inherited balance
         this.secretary = new Secretary(person, salary);
         this.secretary.setAccountBalance(inheritedBalance);
 
-        // Update the global map
         gym.people.put(this.secretary.getId(), this.secretary);
     }
     public List<Secretary> getAllSecretaries() {
-        return new ArrayList<>(allSecretaries); // Return a copy to preserve encapsulation
+        return new ArrayList<>(allSecretaries);
     }
 
     public List<Session> getSessions() {
@@ -211,8 +172,4 @@ public class Gym implements Subject {
         notifyObservers(message);
         operations.add("Notified all observers: " + message);
     }
-
-
-
-
 }

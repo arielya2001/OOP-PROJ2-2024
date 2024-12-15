@@ -9,14 +9,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public abstract class Session {
-    private final SessionType sessionType;
     private LocalDateTime date;
     private ForumType forumType;
     private Instructor instructor;
     private ArrayList<Client> registeredToSession;
 
-    public Session(SessionType sessionType, String date, ForumType forumType, Instructor instructor) {
-        this.sessionType = sessionType;
+    public Session(String date, ForumType forumType, Instructor instructor) {
         this.date = DateUtils.parseDateTime(date);
         this.forumType = forumType;
         this.instructor = instructor;
@@ -28,12 +26,6 @@ public abstract class Session {
     public abstract int getSessionPrice();
     public abstract int getCapacity();
     public abstract boolean isInstructorQualified(Instructor instructor);
-
-    // Getter methods
-    public SessionType getSessionType() {
-        return sessionType;
-    }
-
     public LocalDateTime getDate() {
         return date;
     }
@@ -49,6 +41,10 @@ public abstract class Session {
     public ArrayList<Client> getRegisteredToSession() {
         return registeredToSession;
     }
+    public String getSessionType() {
+        return this.getClass().getSimpleName().replace("Session", "");
+    }
+
 
     // Business logic methods
     public boolean isSessionAvailable() {
@@ -76,7 +72,7 @@ public abstract class Session {
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         return String.format("Session Type: %s | Date: %s | Forum: %s | Instructor: %s | Participants: %d/%d",
-                sessionType, date.format(formatter), forumType, instructor.getName(), registeredToSession.size(), getCapacity());
+                this.getClass().getSimpleName(), date.format(formatter), forumType, instructor.getName(), registeredToSession.size(), getCapacity());
     }
 
 }

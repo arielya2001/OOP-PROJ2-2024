@@ -17,13 +17,10 @@ public class Notify {
 
     public void notifySession(Session session, String message) {
         for (Client client : session.getRegisteredToSession()) {
-            client.update(message); // Notify specific clients
+            client.update(message);
         }
     }
-
-    // Notify all clients registered for sessions on a specific date
     public void notifyByDate(String date, String message) {
-        // Ensure consistent formatting for date comparison and output
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -32,13 +29,11 @@ public class Notify {
         for (Session session : gym.getSessions()) {
             String sessionDateFormatted = session.getDate().toLocalDate().format(outputFormatter);
             if (sessionDateFormatted.equals(reformattedDate)) {
-                // Use notifySession to utilize the observer mechanism for all session participants
                 notifySession(session, message);
             }
         }
 
-        // Use reformatted date for consistent logging
-        gym.addOperations("A message was sent to everyone registered for a session on " + reformattedDate + " : " + message);
+        gym.getSecretary().addOperations("A message was sent to everyone registered for a session on " + reformattedDate + " : " + message);
     }
 
 

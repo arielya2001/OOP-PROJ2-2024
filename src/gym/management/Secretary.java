@@ -49,23 +49,7 @@ public class Secretary extends Person {
     }
 
     public void unregisterClient(Client client) throws ClientNotRegisteredException {
-        boolean removed = false;
-
-        for (int i = 0; i < gym.getClients().size(); i++) {
-            if (gym.getClients().get(i).equals(client)) {
-                gym.getClients().remove(i);
-                removed = true;
-                break;
-            }
-        }
-
-        if (!removed) {
-            throw new ClientNotRegisteredException("Error: Registration is required before attempting to unregister");
-        }
-
-        gym.updateBalanceHistory(client.getId(), client.getAccountBalance());
-
-        gym.addOperations("Unregistered client: " + client.getName());
+        clientManagement.unregisterClient(client);
     }
 
 

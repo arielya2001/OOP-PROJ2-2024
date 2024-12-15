@@ -1,5 +1,6 @@
 package gym.customers;
 
+import gym.Exception.ClientNotRegisteredException;
 import gym.Exception.DuplicateClientException;
 import gym.Exception.InvalidAgeException;
 import gym.management.Gym;
@@ -24,8 +25,25 @@ public class ClientManagement {
         gym.addOperations("Registered new client: " + client.getName());
         return client;
     }
+    public void unregisterClient(Client client) throws ClientNotRegisteredException {
+        boolean removed = false;
 
+        for (int i = 0; i < gym.getClients().size(); i++) {
+            if (gym.getClients().get(i).equals(client)) {
+                gym.getClients().remove(i);
+                removed = true;
+                break;
+            }
+        }
 
+        if (!removed) {
+            throw new ClientNotRegisteredException("Error: Registration is required before attempting to unregister");
+        }
+
+        gym.updateBalanceHistory(client.getId(), client.getAccountBalance());
+
+        gym.addOperations("Unregistered client: " + client.getName());
+    }
 
     public boolean isClient(Client client) {
         for (Client c : gym.getClients()) {

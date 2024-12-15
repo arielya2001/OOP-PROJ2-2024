@@ -22,4 +22,5 @@ public class NinjaSession extends Session {
     public boolean isInstructorQualified(Instructor instructor) {
         return instructor.getQualifications().contains("Ninja");
     }
+
 }

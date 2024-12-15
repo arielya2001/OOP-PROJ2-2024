@@ -100,7 +100,7 @@ public class Gym implements Subject {
         sb.append("Gym Name: ").append(name).append("\n");
 
         // Add secretary details
-        if (secretary != null && secretary instanceof Secretary) {
+        if (secretary != null) {
             Secretary sec = (Secretary) secretary;
             sb.append("Gym Secretary: ").append(sec.toString()).append("\n");
         } else {
@@ -132,7 +132,7 @@ public class Gym implements Subject {
         }
 
         // Add secretary as an employee if applicable
-        if (secretary != null && secretary instanceof Secretary) {
+        if (secretary != null) {
             Secretary sec = (Secretary) secretary;
             sb.append(sec.toString()).append("\n");
         }
@@ -170,6 +170,5 @@ public class Gym implements Subject {
 
     public void notifyClients(String message) {
         notifyObservers(message);
-        operations.add("Notified all observers: " + message);
     }
 }

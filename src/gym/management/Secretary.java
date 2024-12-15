@@ -19,6 +19,7 @@ public class Secretary extends Person {
     private InstructorManagement instructorManagement;
     private int salary;
     private Notify notification = new Notify();
+
     private Gym gym = Gym.getInstance();
 
     public Secretary(Person person, int salary) {

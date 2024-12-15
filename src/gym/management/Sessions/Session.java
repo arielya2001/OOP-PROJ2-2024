@@ -70,9 +70,11 @@ public abstract class Session {
 
     @Override
     public String toString() {
+        String sessionName = this.getClass().getSimpleName();
+        sessionName = sessionName.replace("Session", "");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         return String.format("Session Type: %s | Date: %s | Forum: %s | Instructor: %s | Participants: %d/%d",
-                this.getClass().getSimpleName(), date.format(formatter), forumType, instructor.getName(), registeredToSession.size(), getCapacity());
+                sessionName, date.format(formatter), forumType, instructor.getName(), registeredToSession.size(), getCapacity());
     }
 
 }

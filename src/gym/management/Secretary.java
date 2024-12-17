@@ -4,65 +4,52 @@ import gym.Exception.ClientNotRegisteredException;
 import gym.Exception.DuplicateClientException;
 import gym.Exception.InstructorNotQualifiedException;
 import gym.Exception.InvalidAgeException;
+import gym.customers.BalanceManager;
 import gym.customers.Client;
 import gym.customers.ClientManagement;
-import gym.customers.Gender;
 import gym.customers.Person;
 import gym.management.Sessions.*;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Secretary extends Person {
-    private ClientManagement clientManagement;
-    private SessionManagement sessionManagement;
-    private InstructorManagement instructorManagement;
+public class Secretary extends Person implements Subject {
+    private final ClientManagement clientManagement = ClientManagement.getInstance();
+    private final SessionManagement sessionManagement = SessionManagement.getInstance();
+    private final InstructorManagement instructorManagement = InstructorManagement.getInstance();
+    private final Gym gym = Gym.getInstance();
+    private final List<Observer> observers = new ArrayList<>();
     private int salary;
-    private Notify notification = new Notify();
-
-    private Gym gym = Gym.getInstance();
 
     public Secretary(Person person, int salary) {
-        super(person.getId(), person.getName(), person.getAccountBalance(), person.getGender(), person.getDateOfBirth());
+        super(person.getId(), person.getName(), person.getGender(), person.getDateOfBirth());
         this.salary = salary;
-        this.clientManagement = new ClientManagement();
-        this.sessionManagement = new SessionManagement();
-        this.instructorManagement = new InstructorManagement();
-        addOperations("A new secretary has started working at the gym: " + this.getName());
     }
 
-    public Secretary(String name, int accountBalance, Gender gender, String dateOfBirth, int salary) {
-        super(name, accountBalance, gender, dateOfBirth);
-        this.salary = salary;
-        this.clientManagement = new ClientManagement();
-        this.sessionManagement = new SessionManagement();
-        this.instructorManagement = new InstructorManagement();
-        addOperations("A new secretary has started working at the gym: " + this.getName());
-    }
+
     public int getSalary() {
         return salary;
     }
 
-    public void addOperations(String action) {
-        Gym gym = Gym.getInstance();
-        gym.getOperations().add(action);
-    }
-
-
-
     public Client registerClient(Person person) throws InvalidAgeException, DuplicateClientException {
-        Client c = clientManagement.registerNewClient(person);
-        return c;
+        return clientManagement.registerNewClient(person);
     }
 
     public void unregisterClient(Client client) throws ClientNotRegisteredException {
-        clientManagement.unregisterClient(client);
-    }
+        if (!gym.isCurrentSecretary(this)) {
+            System.out.println("Error: Former secretaries are not permitted to perform actions");
+            return;
+        }
+        clientManagement.removeClient(client);
+        gym.addOperations("Unregistered client: " + client.getName());
 
+    }
 
     public void registerClientToLesson(Client client, Session session)
             throws DuplicateClientException, ClientNotRegisteredException {
-        if (gym.getAllSecretaries().contains(this) && !this.equals(gym.getSecretary())) {
+        if (!gym.isCurrentSecretary(this)) {
             System.out.println("Error: Former secretaries are not permitted to perform actions");
             return;
         }
@@ -76,137 +63,96 @@ public class Secretary extends Person {
         }
 
         ArrayList<String> validationErrors = sessionManagement.validateClientForSession(client, session);
-
         for (String error : validationErrors) {
-            addOperations(error);
+            gym.addOperations(error);
         }
-
         if (!validationErrors.isEmpty()) {
             return;
         }
 
         int sessionPrice = session.getSessionPrice();
-        client.deductBalance(sessionPrice);
-        addToBalance(sessionPrice);
+        client.deductBalance(sessionPrice); // עדכון דרך BalanceManager
+        gym.addToBalance(sessionPrice);
         session.registerClient(client);
-        addOperations("Registered client: " + client.getName() + " to session: " +
+        gym.addOperations("Registered client: " + client.getName() + " to session: " +
                 session.getSessionType() + " on " + session.getDate() + " for price: " + sessionPrice);
     }
 
-
-
-
     public Instructor hireInstructor(Person person, int salaryPerHour, ArrayList<String> qualifications) {
-
-        Person existingPerson = gym.getPeopleMap().get(person.getId());
-        if (existingPerson == null) {
-            existingPerson = person;
-        }
-
-        Instructor instructor = new Instructor(existingPerson, salaryPerHour, qualifications);
-
-        instructorManagement.addInstructor(instructor, gym.getInstructors());
-        addOperations("Hired new instructor: " + instructor.getName() + " with salary per hour: " + instructor.getSalaryPerHour());
-
-        gym.getPeopleMap().put(instructor.getId(), instructor);
-
+        Instructor instructor = new Instructor(person, salaryPerHour, qualifications);
+        instructorManagement.addInstructor(instructor);
+        gym.addOperations("Hired new instructor: " + instructor.getName() + " with salary per hour: " + instructor.getSalaryPerHour());
         return instructor;
     }
 
-
     public Session addSession(String sessionType, String date, ForumType forumType, Instructor instructor) throws InstructorNotQualifiedException {
-        InstructorManagement instructorManagement = new InstructorManagement();
         if (!instructorManagement.isQualified(sessionType, instructor)) {
             throw new InstructorNotQualifiedException("Error: Instructor is not qualified to conduct this session type.");
         }
-        if (!instructorManagement.isInstructorAvailable(instructor, gym.getSessions(), date)) {
-            throw new InstructorNotQualifiedException("Error: Instructor is already booked for another session at this time.");
-        }
 
         Session session = SessionFactory.createSession(sessionType, date, forumType, instructor);
-
-        gym.getSessions().add(session);
-        addOperations("Created new session: " + sessionType +
+        sessionManagement.addToSessions(session);
+        gym.addOperations("Created new session: " + session.getSessionType() +
                 " on " + session.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")) +
-                " with instructor: " + instructor.getName());
+                " with instructor: " + session.getInstructor().getName());
         return session;
     }
 
-    public void addToBalance(int amount) {
-        Gym gym = Gym.getInstance();
-        int currentBalance = gym.getBalance();
-        gym.setBalance(currentBalance + amount);
-    }
-
-
-
     public void paySalaries() {
-        // Deduct secretary's salary if the gym has an active secretary
         if (gym.getSecretary() != null) {
             Secretary secretary = gym.getSecretary();
-            int secretarySalary = secretary.getSalary();
-            addToBalance(-secretarySalary);
+            gym.addToBalance(-secretary.getSalary());
         }
-        int totalInstructorSalary = 0;
-
-        for (Instructor instructor : gym.getInstructors()) {
-            int sessionCount = 0;
-
-            for (Session session : gym.getSessions()) {
-                if (session.getInstructor().equals(instructor)) {
-                    sessionCount++;
-                }
-            }
-
-            int instructorSalary = sessionCount * instructor.getSalaryPerHour();
-            totalInstructorSalary += instructorSalary;
-
-            int oldBalance = instructor.getAccountBalance();
-            instructor.setAccountBalance(oldBalance + instructorSalary);
-
-            Client correspondingClient = null;
-            for (Client client : gym.getClients()) {
-                if (client.getId() == instructor.getId()) {
-                    correspondingClient = client;
-                    break;
-                }
-            }
-
-            if (correspondingClient != null) {
-                correspondingClient.setAccountBalance(instructor.getAccountBalance());
-            }
-        }
-
-        addToBalance(-totalInstructorSalary);
-        addOperations("Salaries have been paid to all employees");
+        int totalInstructorSalary = instructorManagement.calculateInstructorSalaries();
+        gym.addToBalance(-totalInstructorSalary);
+        gym.addOperations("Salaries have been paid to all employees");
     }
 
-
     public void notify(Session session, String message) {
-        if (session != null) {
-            notification.notifySession(session, message);
-            addOperations("A message was sent to everyone registered for session " + session.getSessionType() +
-                    " on " + session.getDate() +
-                    " : " + message);
-        } else {
-            addOperations("Failed to notify: Session is null.");
+        for (Client client : session.getRegisteredToSession()) {
+            if (!observers.contains(client)) {
+                addObserver(client);
+            }
         }
+        notifyObservers(message);
+
+        gym.addOperations("A message was sent to everyone registered for session " +
+                session.getSessionType() + " on " + session.getDate() +
+                " : " + message);
     }
 
     public void notify(String date, String message) {
-        notification.notifyByDate(date, message);
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String reformattedDate = LocalDate.parse(date, inputFormatter).format(outputFormatter);
+
+        boolean messageSent = false;
+        for (Session session : sessionManagement.getSessions()) {
+            String sessionDateFormatted = session.getDate().toLocalDate().format(outputFormatter);
+            if (sessionDateFormatted.equals(reformattedDate)) {
+                messageSent = true;
+            }
+        }
+
+        if (messageSent) {
+            notifyObservers(message);
+            gym.addOperations("A message was sent to everyone registered for a session on " +
+                    reformattedDate + " : " + message);
+        }
     }
+
+
 
     public void notify(String message) {
-        notification.notifyAllClients(message);
-        addOperations("A message was sent to all gym clients: " + message);
-    }
 
+        notifyObservers(message);
+        gym.addOperations("A message was sent to all gym clients: "+message);
+    }
 
     @Override
     public String toString() {
         return String.format("ID: %d | Name: %s | Gender: %s | Birthday: %s | Age: %d | Balance: %d | Role: Secretary | Salary per Month: %d",
-                getId(), getName(), getGender(), getDateOfBirth(), getAge(), getAccountBalance(), salary);
+                getId(), getName(), getGender(), getDateOfBirth(), getAge(), BalanceManager.getBalance(getId()), salary);
     }
 
     public void printActions() {
@@ -215,5 +161,20 @@ public class Secretary extends Person {
         }
     }
 
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
 
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
+    }
 }

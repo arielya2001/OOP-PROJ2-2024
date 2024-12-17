@@ -1,59 +1,38 @@
 package gym.management;
 
+import gym.customers.BalanceManager;
 import gym.customers.Client;
+import gym.customers.ClientManagement;
 import gym.customers.Person;
 import gym.management.Sessions.Session;
+import gym.management.Sessions.SessionManagement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Gym implements Subject {
-    private static final Gym gym = new Gym();
+public class Gym {
+    private static Gym gym;
     private Secretary secretary;
-    private final Map<Integer, Person> people = new HashMap<>();
-    private List<Client> clients = new ArrayList<>();
-    private List<Instructor> instructors = new ArrayList<>();
-    private List<Session> sessions = new ArrayList<>();
-    private List<String> operations = new ArrayList<>();
-    private final Map<Integer, Integer> balanceHistory = new HashMap<>();
-    private List<Observer> observers = new ArrayList<>(); // Observers list
-    private List<Secretary> allSecretaries = new ArrayList<>();
-    private int balance=0;
+    private final List<String> operations = new ArrayList<>();
+    private final List<Secretary> allSecretaries = new ArrayList<>();
+    private int balance = 0;
     private String name;
+
     private Gym() {
-        this.name = "CrossFit"; //שם דיפולטיבי
-
-    }
-    public List<Person> getPeople() {
-        return new ArrayList<>(people.values());
-    }
-    public Map<Integer, Person> getPeopleMap() {
-        return people;
-    }
-    public void updateBalanceHistory(int personId, int balance) {
-        balanceHistory.put(personId, balance);
-    }
-
-    public int getLastKnownBalance(int personId) {
-        return balanceHistory.getOrDefault(personId, 0); // Default to 0 if no record exists
+        this.name = "CrossFit"; // Default name
     }
 
     public static Gym getInstance() {
+        if (gym == null) {
+            gym = new Gym();
+        }
         return gym;
     }
 
     public Secretary getSecretary() {
         return this.secretary;
     }
-
-
-    public List<Client> getClients() {
-        return clients;
-    }
-
-    public List<Instructor> getInstructors() {
-        return instructors;
-    }
-
 
     public int getBalance() {
         return balance;
@@ -63,112 +42,69 @@ public class Gym implements Subject {
         this.name = name;
     }
 
-    public void setBalance(int balance) {
-        this.balance = balance;
+    public void addToBalance(int amount) {
+        BalanceManager.updateBalance(0, amount); // BalanceManager לטיפול מרכזי
+        this.balance += amount;
     }
 
     public List<String> getOperations() {
-        return operations;
+        return Collections.unmodifiableList(operations); // Read-only access
+    }
+
+    public void addOperations(String action) {
+        operations.add(action);
     }
 
     public void setSecretary(Person person, int salary) {
         if (this.secretary != null) {
-            allSecretaries.add(this.secretary);
-
+            allSecretaries.add(this.secretary); // Save previous secretary
         }
-        int inheritedBalance = gym.getLastKnownBalance(person.getId());
 
-
+        // Create a new Secretary instance (preserves original ID)
         this.secretary = new Secretary(person, salary);
-        this.secretary.setAccountBalance(inheritedBalance);
 
-        gym.people.put(this.secretary.getId(), this.secretary);
+        addOperations("A new secretary has started working at the gym: " + person.getName());
     }
+
+    public boolean isCurrentSecretary(Secretary secretary) {
+        return this.secretary != null && this.secretary.equals(secretary);
+    }
+
     public List<Secretary> getAllSecretaries() {
-        return new ArrayList<>(allSecretaries);
-    }
 
-    public List<Session> getSessions() {
-        return sessions;
+        return new ArrayList<>(allSecretaries); // Copy for safety
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder details = new StringBuilder("Gym Name: " + this.name + "\n");
 
-        // Add gym name
-        sb.append("Gym Name: ").append(name).append("\n");
-
-        // Add secretary details
-        if (secretary != null) {
-            Secretary sec = (Secretary) secretary;
-            sb.append("Gym Secretary: ").append(sec.toString()).append("\n");
-        } else {
-            sb.append("Gym Secretary: None\n");
+        if (this.getSecretary() != null) {
+            details.append("Gym Secretary: ").append(this.getSecretary().toString()).append("\n");
         }
 
-        // Add gym balance
-        sb.append("Gym Balance: ").append(balance).append("\n\n");
+        details.append("Gym Balance: ").append(this.getBalance()).append("\n");
 
-        // Add clients
-        sb.append("Clients Data:\n");
-        if (clients.isEmpty()) {
-            sb.append("No clients registered.\n");
-        } else {
-            for (Client c : clients) {
-                sb.append(c.toString()).append("\n");
-            }
+        details.append("\nClients Data:\n");
+        List<Client> clients = ClientManagement.getInstance().getClients();
+        for (Client client : clients) {
+            details.append(client.toString()).append("\n");
         }
 
-        sb.append("\nEmployees Data:\n");
+        details.append("\nEmployees Data:\n");
+        List<Instructor> instructors = InstructorManagement.getInstance().getInstructors();
+        for (Instructor instructor : instructors) {
+            details.append(instructor.toString()).append("\n");
+        }
+        details.append(this.getSecretary().toString()).append("\n");
 
-        // Add instructors
-        if (instructors.isEmpty()) {
-            sb.append("No instructors hired.\n");
-        } else {
-            for (Instructor i : instructors) {
-                sb.append(i.toString()).append("\n");
-            }
+
+        details.append("\nSessions Data:\n");
+        List<Session> sessions = SessionManagement.getInstance().getSessions();
+        for (Session session : sessions) {
+            details.append(session.toString()).append("\n");
         }
 
-        // Add secretary as an employee if applicable
-        if (secretary != null) {
-            Secretary sec = (Secretary) secretary;
-            sb.append(sec.toString()).append("\n");
-        }
-
-        // Add sessions
-        sb.append("\nSessions Data:\n");
-        if (sessions.isEmpty()) {
-            sb.append("No sessions available.\n");
-        } else {
-            for (Session s : sessions) {
-                sb.append(s.toString()).append("\n");
-            }
-        }
-
-        return sb.toString();
-    }
-    @Override
-    public void addObserver(Observer observer) {
-        if (!observers.contains(observer)) {
-            observers.add(observer);
-        }
-    }
-
-    @Override
-    public void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public void notifyObservers(String message) {
-        for (Observer observer : observers) {
-            observer.update(message);
-        }
-    }
-
-    public void notifyClients(String message) {
-        notifyObservers(message);
+        return details.toString();
     }
 }

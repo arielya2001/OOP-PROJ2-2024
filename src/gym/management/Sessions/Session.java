@@ -26,12 +26,17 @@ public abstract class Session {
     public abstract int getSessionPrice();
     public abstract int getCapacity();
     public abstract boolean isInstructorQualified(Instructor instructor);
+
+
     public LocalDateTime getDate() {
         return date;
     }
 
     public ForumType getForumType() {
         return forumType;
+    }
+    public String getSessionType() {
+        return this.getClass().getSimpleName().replace("Session", "");
     }
 
     public Instructor getInstructor() {
@@ -41,10 +46,6 @@ public abstract class Session {
     public ArrayList<Client> getRegisteredToSession() {
         return registeredToSession;
     }
-    public String getSessionType() {
-        return this.getClass().getSimpleName().replace("Session", "");
-    }
-
 
     // Business logic methods
     public boolean isSessionAvailable() {

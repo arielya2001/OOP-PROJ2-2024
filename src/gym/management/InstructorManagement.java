@@ -1,34 +1,72 @@
 package gym.management;
 
-import gym.management.Sessions.Session;
+import gym.customers.BalanceManager;
+import gym.customers.Client;
+import gym.customers.ClientManagement;
+import gym.customers.Person;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InstructorManagement {
 
+    private static InstructorManagement instructorManagement;
+    private final List<Instructor> instructors;
+    private final Gym gym;
+
+    private InstructorManagement() {
+        this.instructors = new ArrayList<>();
+        this.gym = Gym.getInstance();
+    }
+
+    public static InstructorManagement getInstance() {
+        if (instructorManagement == null) {
+            instructorManagement = new InstructorManagement();
+        }
+        return instructorManagement;
+    }
+
+    public List<Instructor> getInstructors() {
+        return instructors;
+    }
+
     public boolean isQualified(String sessionType, Instructor instructor) {
-        // Compare session type using the session class name (e.g., "Pilates", "Ninja")
-        for (String qualification : instructor.getQualifications()) {
-            if (qualification.equalsIgnoreCase(sessionType)) {
-                return true;
-            }
-        }
-        return false;
+        return instructor.getQualifications().contains(sessionType);
     }
 
-
-    public boolean isInstructorAvailable(Instructor instructor, List<Session> sessions, String sessionDateTime) {
-        for (Session session : sessions) {
-            if (session.getInstructor().equals(instructor) && session.getDate().toString().equals(sessionDateTime)) {
-                return false;
-            }
-        }
-        return true;
+    public void addInstructor(Instructor instructor) {
+        instructors.add(instructor);
     }
 
-    public void addInstructor(Instructor instructor, List<Instructor> instructors) {
-        if (!instructors.contains(instructor)) {
-            instructors.add(instructor);
+    public Instructor newInstructor(Person person, int salaryPerHour, ArrayList<String> qualifications) {
+        Client client = ClientManagement.getInstance().getClientFromPerson(person);
+        Instructor instructor;
+
+        if (client != null) {
+            instructor = new Instructor(client, salaryPerHour, qualifications);
+            BalanceManager.initializeBalance(instructor.getId(), BalanceManager.getBalance(client.getId()));
+        } else {
+            instructor = new Instructor(person, salaryPerHour, qualifications);
+            BalanceManager.initializeBalance(instructor.getId(), BalanceManager.getBalance(person.getId()));
         }
+
+        instructors.add(instructor);
+        return instructor;
+    }
+
+    public int calculateInstructorSalaries() {
+        int totalInstructorSalary = 0;
+
+        for (Instructor i : instructors) {
+            int sessionCount = i.getSessionsOfInstructor().size();
+            int instructorSalary = sessionCount * i.getSalaryPerHour();
+
+            totalInstructorSalary += instructorSalary;
+
+            // עדכון היתרה דרך BalanceManager
+            BalanceManager.updateBalance(i.getId(), instructorSalary);
+        }
+
+        return totalInstructorSalary;
     }
 }

@@ -10,20 +10,33 @@ import java.util.List;
 
 public class ClientManagement {
 
-    private static List<Client> clients = new ArrayList<>();
-    private Gym gym = Gym.getInstance();
+    private static ClientManagement clientManagement;
 
-    public static List<Client> getClients() {
+    private final List<Client> clients;
+    private final Gym gym;
+
+    private ClientManagement() {
+        this.clients = new ArrayList<>();
+        this.gym = Gym.getInstance();
+    }
+
+    public static ClientManagement getInstance() {
+        if (clientManagement == null) {
+            clientManagement = new ClientManagement();
+        }
+        return clientManagement;
+    }
+
+    public List<Client> getClients() {
         return clients;
     }
 
+    public void addToClients(Client client) {
+        clients.add(client);
+    }
+
     public boolean isClient(Client client) {
-        for (Client c : clients) {
-            if (c.equals(client)) {
-                return true;
-            }
-        }
-        return false;
+        return clients.contains(client);
     }
 
     public boolean isClient(Person person) {
@@ -36,7 +49,6 @@ public class ClientManagement {
     }
 
     public Client registerNewClient(Person person) throws InvalidAgeException, DuplicateClientException {
-
         if (isClient(person)) {
             throw new DuplicateClientException("Error: The client is already registered");
         }
@@ -48,19 +60,23 @@ public class ClientManagement {
         Client client = new Client(person);
         clients.add(client);
         gym.addOperations("Registered new client: " + client.getName());
-
         return client;
     }
 
-    public void unregisterClient(Client client) throws ClientNotRegisteredException {
-
-            if (isClient(client))
-            {
-                clients.remove(client);
-                gym.addOperations("Unregistered client: " + client.getName());
+    public Client getClientFromPerson(Person person) {
+        for (Client client : clients) {
+            if (client.getId() == person.getId()) {
+                return client;
             }
-            else throw new ClientNotRegisteredException("Error: Registration is required before attempting to unregister");
-             gym.addOperations("Unregistered client: " + client.getName());
+        }
+        return null;
+    }
 
+    public void removeClient(Client client) throws ClientNotRegisteredException {
+        if (isClient(client)) {
+            clients.remove(client);
+        } else {
+            throw new ClientNotRegisteredException("Error: Registration is required before attempting to unregister");
+        }
     }
 }

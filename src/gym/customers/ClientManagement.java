@@ -3,6 +3,7 @@ package gym.customers;
 import gym.Exception.ClientNotRegisteredException;
 import gym.Exception.DuplicateClientException;
 import gym.Exception.InvalidAgeException;
+import gym.management.DateUtils;
 import gym.management.Gym;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ClientManagement {
             throw new DuplicateClientException("Error: The client is already registered");
         }
 
-        if (person.getAge() < 18) {
+        if (!DateUtils.isOverAge(person.getDateOfBirth(), 18)) {
             throw new InvalidAgeException("Error: Client must be at least 18 years old to register");
         }
 
